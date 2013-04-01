@@ -1,4 +1,4 @@
 *.psd
-/screenshots/*
+screenshots/*
 *.DS_Store
 *.zip
