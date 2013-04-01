@@ -2,3 +2,4 @@
 screenshots/*
 *.DS_Store
 *.zip
+/dist/
