@@ -25,7 +25,7 @@ public class Game extends BasicGame {
     private boolean isMenu = true, isTutorial = false;
     public static boolean gameInProgress;
     private Menu menu;
-    private static final int ATTACKCOST = 50;
+    public static final int ATTACKCOST = 50;
     Player player, opponent;
     Tower[] towers = new Tower[21];
     Random rand;
@@ -171,6 +171,8 @@ public class Game extends BasicGame {
 		    }
 		}
 		t.update(container, delta, left, right);
+		if(opponent.equals(t.getOwner()))
+		    t.useAI(towers, this);
 	    }
 	}
 	if(!isMenu && !isTutorial && (opponent.getMinions() <= 0 || player.getMinions() <= 0)){
@@ -269,7 +271,7 @@ public class Game extends BasicGame {
 	}
     }
 
-    private void attackPhase(Tower source, Tower target) {
+    public void attackPhase(Tower source, Tower target) {
 	if(source == null || target == null){
 	    System.err.println("NULL TOWER");
 	    return;
@@ -289,8 +291,10 @@ public class Game extends BasicGame {
 		    source.getOwner().payResources(ATTACKCOST);
 		    break;
 		}
-		resColor = Color.red;
-		resColorTimer = System.currentTimeMillis();
+		if(source.getOwner().equals(player)){
+		    resColor = Color.red;
+		    resColorTimer = System.currentTimeMillis();
+		}
 		//System.out.println("Not enough resources.");
 		break;
 	    case CONQUER:
@@ -306,7 +310,7 @@ public class Game extends BasicGame {
 		System.out.println("You need more people to conquer another structure.");
 		break;
 	    case SUPPORT:
-		if(source.getOwner() != null && target.getOwner() != null && source.getOwner().equals(player) && target.getOwner().equals(player) && source.canSupport() && source.getNumMinions() > 1){
+		if(source.getOwner().equals(target.getOwner()) && source.canSupport() && source.getNumMinions() > 1){
 		    target.addMinions(source.getNumMinions()/2);
 		    source.addMinions(-source.getNumMinions()/2);
 		}

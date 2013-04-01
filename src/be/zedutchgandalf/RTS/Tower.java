@@ -259,4 +259,67 @@ class Tower {
 	    owner.addMinions(getNumMinions());
 	return this;
     }
+
+    void useAI(Tower[] towers, Game game) {
+	//TODO: AI
+	//for now we'll try to attack the weakest tower
+	//that doesn't belong to the opponent.
+	
+	if(canSupport()) {
+	    for(Tower t:towers){
+		if(getOwner().equals(t.getOwner())){
+		    if(t.getNumMinions() < getNumMinions()/3){
+			game.tmode = TowerMode.SUPPORT;
+			game.attackPhase(this, t);
+			System.out.println("Aiding another tower.");
+		    }
+		}
+	    }
+	}
+	
+	int minMinions = 100;
+	int minMinionsPlayer = 100;
+	Tower weakest = null;
+	Tower weakestPlayer = null;
+	int numPlayerTowers = 0;
+	if(canAttack() || canConquer())
+	    for(Tower t:towers){
+		if(!getOwner().equals(t.getOwner())){
+		    if(game.player.equals(t.getOwner())){
+			numPlayerTowers++;
+			if(t.getNumMinions() <= minMinionsPlayer){
+			    minMinionsPlayer = t.getNumMinions();
+			    weakestPlayer = t;
+			}
+		    }
+		    if(t.getNumMinions() <= minMinions){
+			minMinions = t.getNumMinions();
+			weakest = t;
+		    }
+		}
+	    }
+	
+	// if <3 player => attack him :P
+	if(numPlayerTowers <3 || minMinionsPlayer <= 3/2*minMinions){
+	    weakest = weakestPlayer;
+	}
+	
+	if(weakest != null && getOwner().getResources() >= Game.ATTACKCOST){
+	    setPrepareAttack(true);
+	    weakest.setPrepareDefense(true);
+	    game.tmode = TowerMode.ATTACK;
+	    game.attackPhase(this, weakest);
+	    minMinions = weakest.getNumMinions();
+	    System.out.println("Tried to attack another tower!");
+	}
+	
+	//try to conquer if possible.
+	if(weakest != null && minMinions <= 1/2*getNumMinions()){
+	    setPrepareAttack(true);
+	    weakest.setPrepareDefense(true);
+	    game.tmode = TowerMode.CONQUER;
+	    game.attackPhase(this, weakest);
+	    System.out.println("Tried to conquer another tower!");
+	}
+    }
 }
