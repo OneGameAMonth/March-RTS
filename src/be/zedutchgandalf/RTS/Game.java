@@ -106,10 +106,10 @@ public class Game extends BasicGame {
 		tmode = TowerMode.CONQUER;
 	    } else if(container.getInput().isKeyPressed(Input.KEY_S)){
 		tmode = TowerMode.SUPPORT;
-	    } else if(container.getInput().isKeyPressed(Input.KEY_SPACE)){
+	    }/* else if(container.getInput().isKeyPressed(Input.KEY_SPACE)){
 		player.addGold(100);
 		player.addResources(1000);
-	    }
+	    }*/
 	    boolean left = container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON);
 	    boolean right = container.getInput().isMousePressed(Input.MOUSE_RIGHT_BUTTON);
 	    if(container.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && mouseDrag == null){
